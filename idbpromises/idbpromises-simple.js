@@ -40,25 +40,27 @@
     IDBPromises.prototype = {
 
         open: function() {
+            var global = this;
             return new Promise(function(resolve, reject) {
-                var options = this._options;
+                var options = global._options;
                 options.onStoreReady = function() {
                     resolve();
                 };
                 options.onError = function(err) {
                     reject(err);
                 };
-                this.idbstore = new IDBStore(options);
+                global.idbstore = new IDBStore(options);
             });
 
 
         },
 
         deleteDatabase: function() {
-            return this.idbstore.deleteDatabase();
+            return global.idbstore.deleteDatabase();
         },
 
         put: function(key, value) {
+            var global = this;
             return new Promise(function(resolve, reject) {
                 var onSuccess = function(result) {
                     resolve(result);
@@ -67,12 +69,12 @@
                     reject(err);
                 };
 
-                if (this._options.keyPath !== null) {
+                if (global._options.keyPath !== null) {
                     // in-line keys: one arg only (key == value)
-                    this.idbstore.put(key, onSuccess, onError);
+                    global.idbstore.put(key, onSuccess, onError);
                 } else {
                     // out-of-line keys: two args
-                    this.idbstore.put(key, value, onSuccess, onError);
+                    global.idbstore.put(key, value, onSuccess, onError);
                 }
 
             });
@@ -80,6 +82,7 @@
         },
 
         get: function(key) {
+            var global = this;
             return new Promise(function(resolve, reject) {
 
                 var onSuccess = function(result) {
@@ -89,12 +92,13 @@
                     reject(err);
                 };
 
-                this.idbstore.get(key, onSuccess, onError);
+                global.idbstore.get(key, onSuccess, onError);
             });
 
         },
 
         remove: function(key) {
+            var global = this;
             return new Promise(function(resolve, reject) {
                 var onSuccess = function(result) {
                     resolve(result);
@@ -103,7 +107,7 @@
                     reject(err);
                 };
 
-                this.idbstore.remove(key, onSuccess, onError);
+                global.idbstore.remove(key, onSuccess, onError);
 
             });
 
@@ -112,6 +116,7 @@
         },
 
         batch: function(dataArray) {
+            var global = this;
             return new Promise(function(resolve, reject) {
                 var onSuccess = function(result) {
                     resolve(result);
@@ -120,7 +125,7 @@
                     reject(err);
                 };
 
-                this.idbstore.batch(dataArray, onSuccess, onError);
+                global.idbstore.batch(dataArray, onSuccess, onError);
             });
 
 
@@ -128,6 +133,7 @@
         },
 
         getAll: function() {
+            var global = this;
             return new Promise(function(resolve, reject) {
                 var onSuccess = function(result) {
                     resolve(result);
@@ -136,7 +142,7 @@
                     reject(err);
                 };
 
-                this.idbstore.getAll(onSuccess, onError);
+                global.idbstore.getAll(onSuccess, onError);
             });
 
 
@@ -144,6 +150,7 @@
         },
 
         clear: function() {
+            var global = this;
             return new Promise(function(resolve, reject) {
                 var onSuccess = function(result) {
                     resolve(result);
@@ -152,7 +159,7 @@
                     reject(err);
                 };
 
-                this.idbstore.clear(onSuccess, onError);
+                global.idbstore.clear(onSuccess, onError);
             });
 
 
@@ -176,6 +183,7 @@
         },
 
         iterate: function(options) {
+            var global = this;
             options = options || {};
             return new Promise(function(resolve, reject) {
                 options.onEnd = function(result) {
@@ -188,7 +196,7 @@
                     notify(item);
                 };
 
-                this.idbstore.iterate(onItem, options);
+                global.idbstore.iterate(onItem, options);
             });
 
 
@@ -196,6 +204,7 @@
         },
 
         query: function(options) {
+            var global = this;
             options = options || {};
             return new Promise(function(resolve, reject) {
                 var onSuccess = function(result) {
@@ -205,7 +214,7 @@
                     reject(err);
                 };
 
-                this.idbstore.query(onSuccess, options);
+                global.idbstore.query(onSuccess, options);
             });
 
 
@@ -213,6 +222,7 @@
         },
 
         count: function(options) {
+            var global = this;
             options = options || {};
             return new Promise(function(resolve, reject) {
                 var onSuccess = function(result) {
@@ -222,7 +232,7 @@
                     reject(err);
                 };
 
-                this.idbstore.count(onSuccess, options);
+                global.idbstore.count(onSuccess, options);
 
             });
 
