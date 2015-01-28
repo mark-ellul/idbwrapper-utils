@@ -1,5 +1,5 @@
 /**
- * idbpromises-jquery.js
+ * idbpromises-simple.js
  *
  * Copyright (c) 2013 Jens Arps
  * http://jensarps.de
@@ -18,10 +18,8 @@
  * a promise now, this is how callbacks correspond to
  * the promise events:
  *
- * onError   => method().fail()
- * onSuccess => method().done()
- * onEnd     => method().done()
- * onItem    => method().progress()
+ * onError   => method().catch()
+ * onSuccess => method().then()
  */
 (function(name, definition, global) {
     if (typeof define === 'function') {
