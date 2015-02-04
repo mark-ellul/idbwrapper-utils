@@ -180,18 +180,27 @@
             return this.idbstore.indexComplies(actual, expected);
         },
 
-        iterate: function(options) {
+        iterate: function(options, onItemCallback) {
             var global = this;
             options = options || {};
             return new Promise(function(resolve, reject) {
                 options.onEnd = function(result) {
-                    resolve(result);
+                    var data = {};
+                    data.result = result;
+                    data.item = null;
+                    data.cursor = null;
+
+                    resolve(data);
                 };
                 options.onError = function(err) {
                     reject(err);
                 };
-                var onItem = function(item) {
-                    notify(item);
+                var onItem = function(item, cursor) {
+                    var data = {};
+                    data.result = null;
+                    data.item = item;
+                    data.cursor = cursor;
+                    onItemCallback(data);
                 };
 
                 global.idbstore.iterate(onItem, options);
@@ -206,6 +215,7 @@
             options = options || {};
             return new Promise(function(resolve, reject) {
                 var onSuccess = function(result) {
+                    debugger
                     resolve(result);
                 };
                 options.onError = function(err) {
@@ -220,17 +230,18 @@
         },
 
         count: function(options) {
+            debugger;
             var global = this;
             options = options || {};
             return new Promise(function(resolve, reject) {
                 var onSuccess = function(result) {
-                    resolve(result);
+                    resolve(result, cursorTransaction);
                 };
                 options.onError = function(err) {
                     reject(err);
                 };
 
-                global.idbstore.count(onSuccess, options);
+               var cursorTransaction = global.idbstore.count(onSuccess, options);
 
             });
 
@@ -240,7 +251,18 @@
 
         makeKeyRange: function(options) {
             return this.idbstore.makeKeyRange(options);
-        }
+        },
+
+        putBatch: function (arr) {
+            var batchOps = [];
+
+            for (var i = 0; i < arr.length; i++) {
+              batchOps.push({ type: 'put', value: arr[i] });
+            }
+
+
+            return this.batch(batchOps);
+          }
 
     };
 
